@@ -3,6 +3,25 @@
 // Define your bracket matchups (replace with actual team names)
 const matchups = [
     { id: 1, teamA: 'Team A', teamB: 'Team B' },
+    { id: 2, teamA: 'Team A', teamB: 'Team B' },
+    { id: 3, teamA: 'Team A', teamB: 'Team B' },
+    { id: 4, teamA: 'Team A', teamB: 'Team B' },
+    { id: 5, teamA: 'Team A', teamB: 'Team B' },
+    { id: 6, teamA: 'Team A', teamB: 'Team B' },
+    { id: 7, teamA: 'Team A', teamB: 'Team B' },
+    { id: 8, teamA: 'Team A', teamB: 'Team B' },
+    { id: 9, teamA: 'Team A', teamB: 'Team B' },
+    { id: 10, teamA: 'Team A', teamB: 'Team B' },
+    { id: 11, teamA: 'Team A', teamB: 'Team B' },
+    { id: 12, teamA: 'Team A', teamB: 'Team B' },
+    { id: 13, teamA: 'Team A', teamB: 'Team B' },
+    { id: 14, teamA: 'Team A', teamB: 'Team B' },
+    { id: 15, teamA: 'Team A', teamB: 'Team B' },
+    { id: 16, teamA: 'Team A', teamB: 'Team B' },
+    { id: 17, teamA: 'Team A', teamB: 'Team B' },
+    { id: 18, teamA: 'Team A', teamB: 'Team B' },
+    { id: 19, teamA: 'Team A', teamB: 'Team B' },
+    { id: 20, teamA: 'Team A', teamB: 'Team B' },
     // Add more matchups as needed
 ];
 
