@@ -1,72 +1,22 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bracket Challenge</title>
+    <title>Tournament Bracket</title>
     <style>
-        /* Add your CSS styling here */
+        /* Add your CSS styles here */
     </style>
 </head>
 
 <body>
-    <h1>Bracket Challenge</h1>
-    <form id="bracket-form">
-        <!-- Replace with actual team names -->
-        <label for="matchup1">Matchup 1: </label>
-        <input type="text" id="matchup1" name="matchup1" required><br>
-        <!-- Add other matchups similarly -->
-        <!-- ... -->
-        <input type="submit" value="Submit">
-    </form>
+    <h1>Tournament Bracket</h1>
+    <div id="bracket"></div>
+    <input type="text" id="submissionName" placeholder="Enter submission name">
+    <button onclick="submitBracket()">Submit</button>
 
-    <script>
-        // JavaScript logic for handling form submission
-        document.getElementById("bracket-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            // Get the user's input (winners for each matchup)
-            const winners = [];
-            for (let i = 1; i <= NUM_MATCHUPS; i++) {
-                // Replace NUM_MATCHUPS with the actual number of matchups
-                if (!document.getElementById("matchup" + i)) {
-                    console.error("Matchup input not found:", i);
-                    continue;
-                }
-
-                const winnerInput = document.getElementById("matchup" + i);
-                winners.push(winnerInput.value);
-            }
-
-            // You can now process the winners array (store it, validate, etc.)
-            // For simplicity, let's just log the winners to the console:
-            console.log("User's bracket winners:", winners);
-
-            // You can also send the data to the server via AJAX or Fetch:
-            // Example using Fetch API (replace with your actual API endpoint):
-            fetch("/submit-bracket", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        winners
-                    }), // Convert to JSON
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Server response:", data);
-                    // Handle the response (e.g., display success message)
-                })
-                .catch(error => {
-                    console.error("Error submitting bracket:", error);
-                    // Handle the error (e.g., display error message)
-                });
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 
 </html>
