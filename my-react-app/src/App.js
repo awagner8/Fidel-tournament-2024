@@ -1,89 +1,95 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function App() {
-  /*class Team {
-    static getWinnerIndex(){
-      //TODO
-    }
-
-    constructor(teamIndex, winner) {
-      this.index = teamIndex;
-      this.winner = winner;
-    }
-
-    setIndex(index){
-      this.index = index;
-      teams[]
-    }
-
-    setWinner(){
-      this.winner.setName(index);
-    }
-  }*/
-
-  const [teams, setTeams] = useState(Array(4).fill('').map((_, index) => `Team ${String.fromCharCode(65 + index)}`));
-  const [winners, setWinners] = useState(Array(2).fill(''));
+function Bracket({ numTeams }) {
+  const [teams, setTeams] = useState(Array(numTeams).fill('').map((_, index) => `Team ${String.fromCharCode(65 + index)}`));
+  const [rounds, setRounds] = useState(Math.log2(numTeams));
+  const [winners, setWinners] = useState(Array(rounds).fill(''));
   const [champion, setChampion] = useState('');
 
-  const handleTeamClick = (index, team) => {
-    return () => {
-      const newTeams = [...teams];
-      newTeams[index] = newTeams[index] !== team ? team : '';
-      setTeams(newTeams);
-    };
+  // Function to initialize the matchups for each round
+  const initializeMatchups = () => {
+    const matchups = [];
+    let teamsPerRound = numTeams;
+
+    const roundMatchups = [];
+    for (let j = 0; j < teamsPerRound; j += 2) {
+      roundMatchups.push([teams[j], teams[j + 1]]);
+    }
+    matchups.push(roundMatchups);
+    teamsPerRound /= 2;
+
+    for (let i = 1; i < rounds; i++) {
+      const roundMatchups = [];
+      for (let j = 0; j < teamsPerRound; j += 2) {
+        roundMatchups.push(["Empty", "Empty"]);
+      }
+      matchups.push(roundMatchups);
+      teamsPerRound /= 2;
+    }
+    return matchups;
   };
 
-  const handleWinnerClick = (index) => {
+  const [matchups, setMatchups] = useState(initializeMatchups());
+
+  const handleTeamClick = (roundIndex, matchIndex, teamIndex) => {
     return () => {
-      if (teams[index * 2] && teams[index * 2 + 1]) {
-        const winningTeam = Math.random() < 0.5 ? teams[index * 2] : teams[index * 2 + 1];
-        const newWinners = [...winners];
-        newWinners[index] = winningTeam;
-        setWinners(newWinners);
+      if (roundIndex === rounds - 1) {
+        setChampion(matchups[roundIndex][matchIndex][teamIndex]);
+      } else {
+        const newMatchups = [...matchups];
+        const oldWinner = newMatchups[roundIndex + 1][Math.floor(matchIndex / 2)][matchIndex % 2]
+        newMatchups[roundIndex + 1][Math.floor(matchIndex / 2)][matchIndex % 2] = newMatchups[roundIndex][matchIndex][teamIndex];
+        if(oldWinner !== "Empty"){
+          roundIndex = roundIndex + 1;
+          matchIndex = Math.floor(matchIndex / 2);
+          matchIndex = matchIndex % 2;
+          while(roundIndex !== rounds - 1 && newMatchups[roundIndex + 1][Math.floor(matchIndex / 2)][matchIndex % 2] === oldWinner){
+            newMatchups[roundIndex + 1][Math.floor(matchIndex / 2)][matchIndex % 2] = "Empty";
+            roundIndex = roundIndex + 1;
+            matchIndex = Math.floor(matchIndex / 2);
+            matchIndex = matchIndex % 2;
+          }
+        }
+        setMatchups(newMatchups);
       }
     };
   };
 
-  const handleChampionClick = () => {
-    if (winners[0] && winners[1]) {
-      const winningTeam = Math.random() < 0.5 ? winners[0] : winners[1];
-      setChampion(winningTeam);
-    }
-  };
-
   const resetBracket = () => {
-    setTeams(Array(4).fill('').map((_, index) => `Team ${String.fromCharCode(65 + index)}`));
-    setWinners(Array(2).fill(''));
     setChampion('');
+    setMatchups(initializeMatchups());
   };
 
   return (
-    <div className="App">
-      <h1>Variable Team Bracket</h1>
-      <div className="bracket">
-        {Array(2).fill('').map((_, roundIndex) => (
-          <div className="round" key={roundIndex}>
-            <div className="match" onClick={handleTeamClick(roundIndex * 2, 'Team A')}>
-              {teams[roundIndex * 2] || 'Team A'}
+    <div className="bracket">
+      {matchups.map((roundMatchups, roundIndex) => (
+        <div className="round" key={roundIndex}>
+          {roundMatchups.map((matchup, matchIndex) => (
+            <div className="match" style={{ marginTop: `${11 * ((roundIndex + 1) * (roundIndex + 1) - 1)}px`, marginBottom: `${11 * ((roundIndex + 1) * (roundIndex + 1) - 1)}px`}} key={matchIndex}>
+              {matchup.map((team, teamIndex) => (
+                <div className="team" key={teamIndex} onClick={handleTeamClick(roundIndex, matchIndex, teamIndex)}>
+                  {team || `Team ${teamIndex + 1}`}
+                </div>
+              ))}
             </div>
-            <div className="match" onClick={handleTeamClick(roundIndex * 2, 'Team B')}>
-              {teams[roundIndex * 2 + 1] || 'Team B'}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="winners">
-        {winners.map((winner, index) => (
-          <div className="winner" key={index} onClick={handleWinnerClick(index)}>
-            {winner ? `Winner: ${winner}` : 'Click to determine winner'}
-          </div>
-        ))}
-      </div>
-      <div className="champion" onClick={handleChampionClick}>
+          ))}
+        </div>
+      ))}
+      <div className="champion">
         {champion ? `Champion: ${champion}` : 'Click to determine champion'}
       </div>
       <button onClick={resetBracket}>Reset Bracket</button>
+    </div>
+  );
+}
+
+function App() {
+  const numTeams = 16; // Change this value to set the number of teams
+  return (
+    <div className="App">
+      <h1>{`${numTeams} Team Bracket`}</h1>
+      <Bracket numTeams={numTeams} />
     </div>
   );
 }
